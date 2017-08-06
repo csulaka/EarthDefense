@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/wrapper"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +20,7 @@
     android:layout_height="300dp"
     android:layout_gravity="center"
     android:gravity="center"
-    android:background="@drawable/dialogbox"
+    android:background="@android:color/transparent"
     android:orientation="vertical">
 
     <TextView
@@ -45,11 +58,16 @@
         android:textSize="20dp"
         />
 
-    <Button
+    <ImageButton
         android:id="@+id/dismiss"
-        android:layout_marginTop="50dp"
-        android:layout_width="88dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Back" />
+        android:background="@android:color/transparent"
+        android:layout_gravity="right"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/back" />
+
+
 </LinearLayout>
+
+</FrameLayout>

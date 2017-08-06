@@ -39,7 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(MainActivity.this,GameActivity.class));
         }
         if(view==scoreButton){
-            startActivity(new Intent(MainActivity.this,HighScore.class));
+            FragmentManager fm = getFragmentManager();
+            HighScoreFragment dialogFragment = new HighScoreFragment ();
+            dialogFragment.show(fm, "Sample Fragment");
         }
         if(view==optionsButton){
             FragmentManager fm = getFragmentManager();

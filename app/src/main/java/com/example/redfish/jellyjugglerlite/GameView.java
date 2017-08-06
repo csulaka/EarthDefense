@@ -37,6 +37,7 @@ public class GameView extends SurfaceView implements Runnable {
     int screenX;
 
     private Bitmap health1,health2,health3;
+    private Bitmap gameOver;
     boolean playing;
 
     private boolean isGameOver;
@@ -44,6 +45,11 @@ public class GameView extends SurfaceView implements Runnable {
     int lives;
     int highScore[] = new int[4];
 
+    //TODO List
+    // 1. Game Over
+    //2.  Explosions
+    //3. sounds
+    //3. Admob
     public GameView(Context context, int screenX, int screenY){
         super(context);
         surfaceHolder = getHolder();
@@ -60,7 +66,7 @@ public class GameView extends SurfaceView implements Runnable {
         highScore[2] = sharedPreferences.getInt("hiscore3",0);
         highScore[3] = sharedPreferences.getInt("hiscore4",0);
 
-
+        gameOver=BitmapFactory.decodeResource(context.getResources(),R.drawable.gameover);
         health1=BitmapFactory.decodeResource(context.getResources(),R.drawable.health1);
         health2=BitmapFactory.decodeResource(context.getResources(),R.drawable.health2);
         health3=BitmapFactory.decodeResource(context.getResources(),R.drawable.health3);
@@ -145,6 +151,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             if(isGameOver){
                //TODO Game Over Screen
+                canvas.drawBitmap(gameOver,canvas.getWidth()/2- gameOver.getWidth()/2,200,paint);
             }
             surfaceHolder.unlockCanvasAndPost(canvas);
 
