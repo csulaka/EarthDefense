@@ -22,7 +22,7 @@
       />
 
     <CheckBox
-        android:id="@+id/checkBox2"
+        android:id="@+id/soundCheckbox"
         android:layout_width="264dp"
         android:layout_height="56dp"
         android:button="@null"
@@ -34,7 +34,7 @@
          />
 
     <CheckBox
-        android:id="@+id/checkBox3"
+        android:id="@+id/musicCheckbox"
         android:layout_width="264dp"
         android:layout_height="56dp"
         android:button="@null"

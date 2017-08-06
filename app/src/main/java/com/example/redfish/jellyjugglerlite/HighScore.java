@@ -26,7 +26,7 @@ public class HighScore extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_score);
 
-        backButton=(ImageButton) findViewById(R.id.backButton);
+//        backButton=(ImageButton) findViewById(R.id.backButton);
         hiScore1 = (TextView) findViewById(R.id.textView);
         hiScore2 = (TextView) findViewById(R.id.textView2);
         hiScore3 = (TextView) findViewById(R.id.textView3);
@@ -35,10 +35,10 @@ public class HighScore extends AppCompatActivity{
         sharedPreferences  = getSharedPreferences(GameView.PREFS_NAME, Context.MODE_PRIVATE);
 
 
-        hiScore1.setText("1.              \t     "+sharedPreferences.getInt("hiscore1",0));
-        hiScore2.setText("2.               \t    "+sharedPreferences.getInt("hiscore2",0));
-        hiScore3.setText("3.                \t   "+sharedPreferences.getInt("hiscore3",0));
-        hiScore4.setText("4.                  \t "+sharedPreferences.getInt("hiscore4",0));
+        hiScore1.setText("1.\t\t\t"+sharedPreferences.getInt("hiscore1",0));
+        hiScore2.setText("2.\t\t\t"+sharedPreferences.getInt("hiscore2",0));
+        hiScore3.setText("3.\t\t\t"+sharedPreferences.getInt("hiscore3",0));
+        hiScore4.setText("4.\t\t\t"+sharedPreferences.getInt("hiscore4",0));
     }
 
 }

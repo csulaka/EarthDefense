@@ -36,10 +36,12 @@ public class GameView extends SurfaceView implements Runnable {
     private Random rng;
     int screenX;
 
+    private Bitmap health1,health2,health3;
     boolean playing;
 
     private boolean isGameOver;
     int score;
+    int lives;
     int highScore[] = new int[4];
 
     public GameView(Context context, int screenX, int screenY){
@@ -50,6 +52,7 @@ public class GameView extends SurfaceView implements Runnable {
         this.context=context;
         isGameOver = false;
         rng=new Random();
+        lives=3;
         score=0;
         sharedPreferences=context.getSharedPreferences(GameView.PREFS_NAME,Context.MODE_PRIVATE);
         highScore[0] = sharedPreferences.getInt("hiscore1",0);
@@ -57,10 +60,14 @@ public class GameView extends SurfaceView implements Runnable {
         highScore[2] = sharedPreferences.getInt("hiscore3",0);
         highScore[3] = sharedPreferences.getInt("hiscore4",0);
 
+
+        health1=BitmapFactory.decodeResource(context.getResources(),R.drawable.health1);
+        health2=BitmapFactory.decodeResource(context.getResources(),R.drawable.health2);
+        health3=BitmapFactory.decodeResource(context.getResources(),R.drawable.health3);
         invadersArrayList=new ArrayList<Invaders>();
         //TODO Enemies
         for(int i=0;i<3;i++) {
-            invadersArrayList.add(invaders = new Invaders(context, 100*rng.nextInt(4)));
+            invadersArrayList.add(invaders = new Invaders(context, 100*rng.nextInt(6)));
         }
 
     }
@@ -78,15 +85,37 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void update() {
-//        for(Invaders invaders:invadersArrayList)
-//            invaders.move();
+        for(Invaders invaders:invadersArrayList) {
+            invaders.move();
+            if(Math.round(invaders.getY())>650){
+                lives--;
+                invaders.setX(rng.nextInt(6)*100);
+                invaders.setY((rng.nextInt(2)+1)*-200);
+                invaders.getHitBox().set(invaders.getX(),invaders.getY(),invaders.getX()+invaders.getBitmap().getWidth(),invaders.getY()+invaders.getBitmap().getHeight());
+            }
+        }
 
-        SharedPreferences.Editor e = sharedPreferences.edit();
+        if(score%10==0&&score>0){
+            score++;
+            for(Invaders invaders:invadersArrayList)
+                invaders.setSpeed(invaders.getSpeed()+1);
+        }
+        if(score%40==0&&score>0){
+            score++;
+            invadersArrayList.add(invaders = new Invaders(context, 100*rng.nextInt(7)));
+        }
+
+        //TODO High Scores
         for(int i=0;i<4;i++){
-            if(score>sharedPreferences.getInt("hiscore"+i,0)) {
-                e.putInt("hiscore" + i, highScore[i]);
+            if(score>highScore[i]){
+                highScore[i] = score;
                 break;
             }
+        }
+        SharedPreferences.Editor e = sharedPreferences.edit();
+        //TODO High Scores
+        for(int i=1;i<5;i++){
+            e.putInt("hiscore" + i, highScore[i-1]);
         }
         e.apply();
     }
@@ -98,11 +127,22 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
             paint.setColor(Color.WHITE);
+            paint.setTextAlign(Paint.Align.CENTER);
             paint.setTextSize(100);
-            canvas.drawText(""+score,canvas.getWidth()/2-35,100,paint);
+            canvas.drawText(""+score,canvas.getWidth()/2,140,paint);
+            //TODO Draw Lives Done
+            if(lives==3)
+                canvas.drawBitmap(health3,canvas.getWidth()-health3.getWidth(),920,paint);
+            else if(lives==2)
+                canvas.drawBitmap(health2,canvas.getWidth()-health2.getWidth(),920,paint);
+            else if(lives==1)
+                canvas.drawBitmap(health2,canvas.getWidth()-health1.getWidth(),920,paint);
+            else if(lives==0)
+                isGameOver=true;
 
             for(Invaders invaders:invadersArrayList)
               canvas.drawBitmap(invaders.getBitmap(),invaders.getX(),invaders.getY(),paint);
+
             if(isGameOver){
                //TODO Game Over Screen
             }
@@ -120,7 +160,11 @@ public class GameView extends SurfaceView implements Runnable {
                 System.out.println("Hey touch works");
                 for(Invaders invaders:invadersArrayList){
                     if(invaders.getHitBox().contains(touchX,touchY)){
-                        System.out.print("Yeah here it is");
+                        System.out.println("Yeah here it is");
+                        score++;
+                        invaders.setX(rng.nextInt(7)*100);
+                        invaders.setY((rng.nextInt(2)+1)*-200);
+                        invaders.getHitBox().set(invaders.getX(),invaders.getY(),invaders.getX()+invaders.getBitmap().getWidth(),invaders.getY()+invaders.getBitmap().getHeight());
                     }
                 }
                 break;

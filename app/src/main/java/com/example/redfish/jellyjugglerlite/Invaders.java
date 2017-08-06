@@ -15,13 +15,13 @@ public class Invaders {
     private Bitmap bitmap;
     private int x;
     private int y;
-    private int speed=1;
+    private int speed=4;
     private Random rng;
     private Rect hitBox;
     public Invaders(Context context, int x){
         rng=new Random();
         bitmap= BitmapFactory.decodeResource(context.getResources(),R.drawable.asteroid);
-        this.y=rng.nextInt(4)*100;
+        this.y=(rng.nextInt(2)+1)*-200;
         this.x=x;
         hitBox=new Rect(x,y,x+bitmap.getWidth(),y+bitmap.getHeight());
     }
@@ -30,10 +30,7 @@ public class Invaders {
     public void move(){
         this.y+=speed;
 
-        hitBox.left=x;
-        hitBox.top=y;
-        hitBox.right=x+bitmap.getWidth();
-        hitBox.bottom=y+getBitmap().getHeight();
+        hitBox.set(x,y,x+bitmap.getWidth(),y+getBitmap().getHeight());
     }
     public Rect getHitBox(){return hitBox;}
     public void setX(int x){this.x=x;}
