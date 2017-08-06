@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/edit_name"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@drawable/dialogbox"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/optionsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Preferences"
+        android:textColor="@color/colorWhite"
+        android:textSize="40dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="30dp"
+      />
+
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="264dp"
+        android:layout_height="56dp"
+        android:button="@null"
+        android:buttonTint="@color/colorWhite"
+        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+        android:text="Sound Effects"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+         />
+
+    <CheckBox
+        android:id="@+id/checkBox3"
+        android:layout_width="264dp"
+        android:layout_height="56dp"
+        android:button="@null"
+        android:buttonTint="@color/colorWhite"
+        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+        android:text="Music"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"
+        />
+
+    <Button
+        android:id="@+id/dismiss"
+        android:layout_marginTop="50dp"
+        android:layout_width="88dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Back" />
+</LinearLayout>
