@@ -55,4 +55,10 @@ public class GameActivity extends AppCompatActivity{
         gameView.resume();
     }
 
+    @Override
+    public void onBackPressed() {
+        BackgroundMusic.stopMusic();
+        GameActivity.this.finish();
+    }
+
 }

@@ -51,8 +51,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(view==exitButton){
             finish();
+            BackgroundMusic.stopMusic();
             System.exit(0);
         }
+    }
+    @Override
+    public void onBackPressed() {
+        BackgroundMusic.stopMusic();
+        MainActivity.this.finish();
     }
 }
 

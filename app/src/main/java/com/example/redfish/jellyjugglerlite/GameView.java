@@ -1,5 +1,6 @@
 package com.example.redfish.jellyjugglerlite;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,12 +11,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -35,9 +42,12 @@ public class GameView extends SurfaceView implements Runnable {
     private Invaders invaders;
     private Random rng;
     int screenX;
+    private SoundPool soundPool;
+    private MediaPlayer music;
 
     private Bitmap health1,health2,health3;
     private Bitmap gameOver;
+
     boolean playing;
 
     private boolean isGameOver;
@@ -45,10 +55,11 @@ public class GameView extends SurfaceView implements Runnable {
     int lives;
     int highScore[] = new int[4];
 
+    private AnimationDrawable explosionAnimation;
     //TODO List
-    // 1. Game Over
+    // 1. Game Over DONE
     //2.  Explosions
-    //3. sounds
+    //3. sounds DONE
     //3. Admob
     public GameView(Context context, int screenX, int screenY){
         super(context);
@@ -66,11 +77,13 @@ public class GameView extends SurfaceView implements Runnable {
         highScore[2] = sharedPreferences.getInt("hiscore3",0);
         highScore[3] = sharedPreferences.getInt("hiscore4",0);
 
+        BackgroundMusic.musicPlaying(context);
         gameOver=BitmapFactory.decodeResource(context.getResources(),R.drawable.gameover);
         health1=BitmapFactory.decodeResource(context.getResources(),R.drawable.health1);
         health2=BitmapFactory.decodeResource(context.getResources(),R.drawable.health2);
         health3=BitmapFactory.decodeResource(context.getResources(),R.drawable.health3);
         invadersArrayList=new ArrayList<Invaders>();
+        explosionAnimation=(AnimationDrawable)context.getResources().getDrawable(R.drawable.explosion);
         //TODO Enemies
         for(int i=0;i<3;i++) {
             invadersArrayList.add(invaders = new Invaders(context, 100*rng.nextInt(6)));
@@ -143,7 +156,7 @@ public class GameView extends SurfaceView implements Runnable {
                 canvas.drawBitmap(health2,canvas.getWidth()-health2.getWidth(),920,paint);
             else if(lives==1)
                 canvas.drawBitmap(health2,canvas.getWidth()-health1.getWidth(),920,paint);
-            else if(lives==0)
+            else if(lives<1)
                 isGameOver=true;
 
             for(Invaders invaders:invadersArrayList)
@@ -151,6 +164,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             if(isGameOver){
                //TODO Game Over Screen
+                BackgroundMusic.stopMusic();
                 canvas.drawBitmap(gameOver,canvas.getWidth()/2- gameOver.getWidth()/2,200,paint);
             }
             surfaceHolder.unlockCanvasAndPost(canvas);
@@ -207,4 +221,7 @@ public class GameView extends SurfaceView implements Runnable {
         gameThread.start();
     }
 
+
 }
+
+
