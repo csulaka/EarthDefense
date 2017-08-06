@@ -29,7 +29,7 @@ public class GameActivity extends AppCompatActivity{
 
 
         ImageView bgImagePanel = new ImageView(this);
-        bgImagePanel.setBackgroundResource(R.drawable.bg); // use any Bitmap or BitmapDrawable you want
+        bgImagePanel.setBackgroundResource(R.drawable.bg);
 
 
         RelativeLayout.LayoutParams fillParentLayout = new RelativeLayout.LayoutParams(

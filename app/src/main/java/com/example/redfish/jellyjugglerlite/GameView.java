@@ -17,6 +17,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Redfish on 8/5/2017.
@@ -31,7 +32,8 @@ public class GameView extends SurfaceView implements Runnable {
     private Canvas canvas;
     private SurfaceHolder surfaceHolder;
     private ArrayList<Invaders> invadersArrayList;
-
+    private Invaders invaders;
+    private Random rng;
     int screenX;
 
     boolean playing;
@@ -47,12 +49,19 @@ public class GameView extends SurfaceView implements Runnable {
         this.screenX = screenX;
         this.context=context;
         isGameOver = false;
+        rng=new Random();
         score=0;
         sharedPreferences=context.getSharedPreferences(GameView.PREFS_NAME,Context.MODE_PRIVATE);
         highScore[0] = sharedPreferences.getInt("hiscore1",0);
         highScore[1] = sharedPreferences.getInt("hiscore2",0);
         highScore[2] = sharedPreferences.getInt("hiscore3",0);
         highScore[3] = sharedPreferences.getInt("hiscore4",0);
+
+        invadersArrayList=new ArrayList<Invaders>();
+        //TODO Enemies
+        for(int i=0;i<3;i++) {
+            invadersArrayList.add(invaders = new Invaders(context, 100*rng.nextInt(4)));
+        }
 
     }
 
@@ -69,16 +78,15 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void update() {
-        for(int i=0;i<4;i++){
-            if(highScore[i]<score){
-                highScore[i] = score;
-                break;
-            }
-        }
+//        for(Invaders invaders:invadersArrayList)
+//            invaders.move();
+
         SharedPreferences.Editor e = sharedPreferences.edit();
         for(int i=0;i<4;i++){
-            int j = i+1;
-            e.putInt("hiscore"+j,highScore[i]);
+            if(score>sharedPreferences.getInt("hiscore"+i,0)) {
+                e.putInt("hiscore" + i, highScore[i]);
+                break;
+            }
         }
         e.apply();
     }
@@ -88,18 +96,15 @@ public class GameView extends SurfaceView implements Runnable {
         if (surfaceHolder.getSurface().isValid()) {
             canvas = surfaceHolder.lockCanvas();
             canvas.drawColor(0, PorterDuff.Mode.CLEAR);
-            Bitmap asdf=BitmapFactory.decodeResource(context.getResources(),R.drawable.back);
-            canvas.drawBitmap(asdf,100,100,paint);
 
             paint.setColor(Color.WHITE);
             paint.setTextSize(100);
-            canvas.drawText(""+score,canvas.getWidth()/2-20,100,paint);
+            canvas.drawText(""+score,canvas.getWidth()/2-35,100,paint);
 
+            for(Invaders invaders:invadersArrayList)
+              canvas.drawBitmap(invaders.getBitmap(),invaders.getX(),invaders.getY(),paint);
             if(isGameOver){
-                paint.setTextSize(150);
-                paint.setTextAlign(Paint.Align.CENTER);
-                int yPos=(int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
-                canvas.drawText("Game Over",canvas.getWidth()/2,yPos,paint);
+               //TODO Game Over Screen
             }
             surfaceHolder.unlockCanvasAndPost(canvas);
 
@@ -107,11 +112,17 @@ public class GameView extends SurfaceView implements Runnable {
     }
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                break;
+        int touchX=Math.round(motionEvent.getX());
+        int touchY=Math.round(motionEvent.getY());
+
+        switch(motionEvent.getAction()){
             case MotionEvent.ACTION_DOWN:
-                score++;
+                System.out.println("Hey touch works");
+                for(Invaders invaders:invadersArrayList){
+                    if(invaders.getHitBox().contains(touchX,touchY)){
+                        System.out.print("Yeah here it is");
+                    }
+                }
                 break;
 
         }

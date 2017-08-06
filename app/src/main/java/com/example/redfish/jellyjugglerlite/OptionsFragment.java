@@ -17,14 +17,12 @@ import android.widget.TextView;
 
 public class OptionsFragment extends DialogFragment {
 
-    private EditText mEditText;
 
 
-    public interface UserNameListener {
-        void onFinishUserDialog(String user);
+    public interface PreferencesListener {
+        void onFinishUserDialog(boolean musicEnable, boolean soundEnable);
     }
 
-    // Empty constructor required for DialogFragment
     public OptionsFragment() {}
 
     @Override
