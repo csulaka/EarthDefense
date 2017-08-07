@@ -16,7 +16,9 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -39,11 +41,9 @@ public class GameView extends SurfaceView implements Runnable {
     private Canvas canvas;
     private SurfaceHolder surfaceHolder;
     private ArrayList<Invaders> invadersArrayList;
-    private Invaders invaders;
     private Random rng;
     int screenX;
 
-    private MediaPlayer music;
     private SoundPool soundPool;
     private int explosion;
 
@@ -57,12 +57,7 @@ public class GameView extends SurfaceView implements Runnable {
     int lives;
     int highScore[] = new int[4];
 
-//    private AnimationDrawable explosionAnimation;
     //TODO List
-    // 1. Game Over DONE
-    //2.  Explosions Done
-    //3. sounds DONE
-    //3. Admob
     public GameView(Context context, int screenX, int screenY){
         super(context);
         surfaceHolder = getHolder();
@@ -82,18 +77,16 @@ public class GameView extends SurfaceView implements Runnable {
 
         soundPool=new SoundPool(5,AudioManager.STREAM_MUSIC,0);
         explosion=soundPool.load(context,R.raw.explosion,1);
-//        explosion=MediaPlayer.create(context,R.raw.explosion);
-//        if(sharedPreferences.getBoolean("musicEnable",true))
-//            BackgroundMusic.musicPlaying(context);
+
         gameOver=BitmapFactory.decodeResource(context.getResources(),R.drawable.gameover);
         health1=BitmapFactory.decodeResource(context.getResources(),R.drawable.health1);
         health2=BitmapFactory.decodeResource(context.getResources(),R.drawable.health2);
         health3=BitmapFactory.decodeResource(context.getResources(),R.drawable.health3);
         invadersArrayList=new ArrayList<Invaders>();
-//        explosionAnimation=(AnimationDrawable)context.getResources().getDrawable(R.drawable.explosion);
+
         //TODO Enemies
         for(int i=0;i<3;i++) {
-            invadersArrayList.add(invaders = new Invaders(context, 100*rng.nextInt(6)));
+            invadersArrayList.add(new Invaders(context, 100*rng.nextInt(6)));
         }
 
     }
@@ -132,7 +125,7 @@ public class GameView extends SurfaceView implements Runnable {
         }
         if(score%50==0&&score>0){
             score++;
-            invadersArrayList.add(invaders = new Invaders(context, 100*rng.nextInt(7)));
+            invadersArrayList.add(new Invaders(context, 100*rng.nextInt(7)));
         }
 
     }
@@ -186,7 +179,6 @@ public class GameView extends SurfaceView implements Runnable {
     public boolean onTouchEvent(MotionEvent motionEvent) {
         int touchX=Math.round(motionEvent.getX());
         int touchY=Math.round(motionEvent.getY());
-
         switch(motionEvent.getAction()){
             case MotionEvent.ACTION_DOWN:
 //                System.out.println("Hey touch works");
@@ -196,6 +188,7 @@ public class GameView extends SurfaceView implements Runnable {
                         if (sharedPreferences.getBoolean("soundEnable", true))
                             soundPool.play(explosion, 1, 1, 0, 0, 1);
                         score++;
+
                         invaders.setX(rng.nextInt(7)*100);
                         invaders.setY((rng.nextInt(2)+1)*-200);
                         invaders.getHitBox().set(invaders.getX(),invaders.getY(),invaders.getX()+invaders.getBitmap().getWidth(),invaders.getY()+invaders.getBitmap().getHeight());
