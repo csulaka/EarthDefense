@@ -55,7 +55,7 @@ public class GameView extends SurfaceView implements Runnable {
     int lives;
     int highScore[] = new int[4];
 
-    private AnimationDrawable explosionAnimation;
+//    private AnimationDrawable explosionAnimation;
     //TODO List
     // 1. Game Over DONE
     //2.  Explosions Done
@@ -79,13 +79,14 @@ public class GameView extends SurfaceView implements Runnable {
         highScore[3] = sharedPreferences.getInt("hiscore4",0);
 
         explosion=MediaPlayer.create(context,R.raw.explosion);
-        BackgroundMusic.musicPlaying(context);
+        if(sharedPreferences.getBoolean("musicEnable",true))
+            BackgroundMusic.musicPlaying(context);
         gameOver=BitmapFactory.decodeResource(context.getResources(),R.drawable.gameover);
         health1=BitmapFactory.decodeResource(context.getResources(),R.drawable.health1);
         health2=BitmapFactory.decodeResource(context.getResources(),R.drawable.health2);
         health3=BitmapFactory.decodeResource(context.getResources(),R.drawable.health3);
         invadersArrayList=new ArrayList<Invaders>();
-        explosionAnimation=(AnimationDrawable)context.getResources().getDrawable(R.drawable.explosion);
+//        explosionAnimation=(AnimationDrawable)context.getResources().getDrawable(R.drawable.explosion);
         //TODO Enemies
         for(int i=0;i<3;i++) {
             invadersArrayList.add(invaders = new Invaders(context, 100*rng.nextInt(6)));
@@ -110,7 +111,10 @@ public class GameView extends SurfaceView implements Runnable {
             invaders.move();
             if(Math.round(invaders.getY())>650){
                 lives--;
-                explosion.start();
+                if(!isGameOver) {
+                    if (sharedPreferences.getBoolean("soundEnable", true))
+                        explosion.start();
+                }
                 invaders.setX(rng.nextInt(6)*100);
                 invaders.setY((rng.nextInt(2)+1)*-200);
                 invaders.getHitBox().set(invaders.getX(),invaders.getY(),invaders.getX()+invaders.getBitmap().getWidth(),invaders.getY()+invaders.getBitmap().getHeight());
