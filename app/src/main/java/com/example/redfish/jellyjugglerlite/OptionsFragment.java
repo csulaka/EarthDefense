@@ -25,6 +25,7 @@ public class OptionsFragment extends DialogFragment {
 
     private CheckBox soundCheckbox;
     private CheckBox musicCheckbox;
+    private CheckBox adsCheckbox;
     private ImageButton dismiss;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
@@ -66,6 +67,21 @@ public class OptionsFragment extends DialogFragment {
                                                   }
 
 
+        );
+        adsCheckbox=(CheckBox) rootView.findViewById(R.id.adsCheckbox);
+        adsCheckbox.setChecked(preferences.getBoolean("adsEnable",true));
+        adsCheckbox.setOnCheckedChangeListener( new CheckBox.OnCheckedChangeListener(){
+                                                      @Override
+                                                      public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                                          editor.putBoolean("adsEnable",adsCheckbox.isChecked());
+
+                                                          if(adsCheckbox.isChecked())
+                                                              getActivity().findViewById(R.id.adView).setVisibility(View.VISIBLE);
+                                                          else
+                                                              getActivity().findViewById(R.id.adView).setVisibility(View.INVISIBLE);
+                                                          editor.apply();
+                                                      }
+                                                  }
         );
         dismiss = (ImageButton) rootView.findViewById(R.id.dismiss);
         dismiss.setOnClickListener(new View.OnClickListener() {

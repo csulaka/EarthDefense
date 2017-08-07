@@ -69,7 +69,24 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
-        app:layout_constraintVertical_bias="0.963" />
+        app:layout_constraintHorizontal_bias="0.952"
+        app:layout_constraintVertical_bias="0.861" />
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        ads:layout_constraintRight_toRightOf="parent"
+        ads:layout_constraintLeft_toLeftOf="parent"
+        ads:layout_constraintHorizontal_bias="0.0"
+        ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/optionsButton"
+        ads:layout_constraintVertical_bias="1.0">
+    </com.google.android.gms.ads.AdView>
 
 </android.support.constraint.ConstraintLayout>
