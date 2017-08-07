@@ -42,12 +42,12 @@ public class GameView extends SurfaceView implements Runnable {
     private Invaders invaders;
     private Random rng;
     int screenX;
-    private SoundPool soundPool;
+    private MediaPlayer explosion;
     private MediaPlayer music;
 
     private Bitmap health1,health2,health3;
     private Bitmap gameOver;
-
+    public int runOnce;
     boolean playing;
 
     private boolean isGameOver;
@@ -58,7 +58,7 @@ public class GameView extends SurfaceView implements Runnable {
     private AnimationDrawable explosionAnimation;
     //TODO List
     // 1. Game Over DONE
-    //2.  Explosions
+    //2.  Explosions Done
     //3. sounds DONE
     //3. Admob
     public GameView(Context context, int screenX, int screenY){
@@ -71,12 +71,14 @@ public class GameView extends SurfaceView implements Runnable {
         rng=new Random();
         lives=3;
         score=0;
+        runOnce=1;
         sharedPreferences=context.getSharedPreferences(GameView.PREFS_NAME,Context.MODE_PRIVATE);
         highScore[0] = sharedPreferences.getInt("hiscore1",0);
         highScore[1] = sharedPreferences.getInt("hiscore2",0);
         highScore[2] = sharedPreferences.getInt("hiscore3",0);
         highScore[3] = sharedPreferences.getInt("hiscore4",0);
 
+        explosion=MediaPlayer.create(context,R.raw.explosion);
         BackgroundMusic.musicPlaying(context);
         gameOver=BitmapFactory.decodeResource(context.getResources(),R.drawable.gameover);
         health1=BitmapFactory.decodeResource(context.getResources(),R.drawable.health1);
@@ -108,6 +110,7 @@ public class GameView extends SurfaceView implements Runnable {
             invaders.move();
             if(Math.round(invaders.getY())>650){
                 lives--;
+                explosion.start();
                 invaders.setX(rng.nextInt(6)*100);
                 invaders.setY((rng.nextInt(2)+1)*-200);
                 invaders.getHitBox().set(invaders.getX(),invaders.getY(),invaders.getX()+invaders.getBitmap().getWidth(),invaders.getY()+invaders.getBitmap().getHeight());
@@ -124,19 +127,6 @@ public class GameView extends SurfaceView implements Runnable {
             invadersArrayList.add(invaders = new Invaders(context, 100*rng.nextInt(7)));
         }
 
-        //TODO High Scores
-        for(int i=0;i<4;i++){
-            if(score>highScore[i]){
-                highScore[i] = score;
-                break;
-            }
-        }
-        SharedPreferences.Editor e = sharedPreferences.edit();
-        //TODO High Scores
-        for(int i=1;i<5;i++){
-            e.putInt("hiscore" + i, highScore[i-1]);
-        }
-        e.apply();
     }
 
 
@@ -156,14 +146,27 @@ public class GameView extends SurfaceView implements Runnable {
                 canvas.drawBitmap(health2,canvas.getWidth()-health2.getWidth(),920,paint);
             else if(lives==1)
                 canvas.drawBitmap(health2,canvas.getWidth()-health1.getWidth(),920,paint);
-            else if(lives<1)
-                isGameOver=true;
-
+            else if(lives<1) {
+                isGameOver = true;
+            }
             for(Invaders invaders:invadersArrayList)
               canvas.drawBitmap(invaders.getBitmap(),invaders.getX(),invaders.getY(),paint);
 
             if(isGameOver){
-               //TODO Game Over Screen
+                      if(runOnce==1) {
+                          for (int i = 0; i < 4; i++) {
+                              if (score > highScore[i]) {
+                                  highScore[i] = score;
+                                  i = 4;
+                              }
+                          }
+                          SharedPreferences.Editor e = sharedPreferences.edit();
+                          for (int i = 1; i < 5; i++) {
+                              e.putInt("hiscore" + i, highScore[i - 1]);
+                          }
+                          e.apply();
+                          runOnce--;
+                      }
                 BackgroundMusic.stopMusic();
                 canvas.drawBitmap(gameOver,canvas.getWidth()/2- gameOver.getWidth()/2,200,paint);
             }

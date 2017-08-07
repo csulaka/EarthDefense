@@ -14,7 +14,11 @@ public class BackgroundMusic {
         music.setLooping(true);
         music.start();
     }
-    public static void stopMusic(){
-        music.stop();
+    public static void stopMusic() {
+        if (music != null) {
+            if (music.isPlaying()) {
+                music.stop();
+            }
+        }
     }
 }
