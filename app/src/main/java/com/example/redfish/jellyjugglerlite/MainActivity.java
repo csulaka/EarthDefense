@@ -22,7 +22,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        BackgroundMusic.musicPlaying(this);
+        BackgroundMusic.unmuteMusic();
         playButton = (ImageButton) findViewById(R.id.playButton);
         scoreButton = (ImageButton) findViewById(R.id.scoreButton);
         exitButton = (ImageButton) findViewById(R.id.exitButton);
@@ -38,7 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if(view==playButton){
+
             startActivity(new Intent(MainActivity.this,GameActivity.class));
+            finish();
         }
         if(view==scoreButton){
             FragmentManager fm = getFragmentManager();

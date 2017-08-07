@@ -56,6 +56,11 @@ public class OptionsFragment extends DialogFragment {
                                                       @Override
                                                       public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                                                           editor.putBoolean("musicEnable",musicCheckbox.isChecked());
+
+                                                          if(musicCheckbox.isChecked())
+                                                            BackgroundMusic.unmuteMusic();
+                                                          else
+                                                              BackgroundMusic.muteMusic();
                                                           editor.apply();
                                                       }
                                                   }

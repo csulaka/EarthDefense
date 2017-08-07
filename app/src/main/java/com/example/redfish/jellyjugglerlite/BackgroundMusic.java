@@ -10,9 +10,25 @@ import android.media.MediaPlayer;
 public class BackgroundMusic {
     public static MediaPlayer music;
     public static void musicPlaying(Context context) {
-        music = MediaPlayer.create(context, R.raw.music);
-        music.setLooping(true);
-        music.start();
+        if(music==null) {
+            music = MediaPlayer.create(context, R.raw.music);
+            music.setLooping(true);
+        }
+        startMusic();
+    }
+    public static void muteMusic(){
+        if(music!=null){
+            music.setVolume(0,0);
+        }
+    }
+    public static void unmuteMusic(){
+        if(music!=null){
+            music.setVolume(1,1);
+        }
+    }
+    public static void startMusic(){
+        if(music!=null&&!music.isPlaying())
+            music.start();
     }
     public static void stopMusic() {
         if (music != null) {

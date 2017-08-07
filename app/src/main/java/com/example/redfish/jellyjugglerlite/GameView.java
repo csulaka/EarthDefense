@@ -42,8 +42,10 @@ public class GameView extends SurfaceView implements Runnable {
     private Invaders invaders;
     private Random rng;
     int screenX;
-    private MediaPlayer explosion;
+
     private MediaPlayer music;
+    private SoundPool soundPool;
+    private int explosion;
 
     private Bitmap health1,health2,health3;
     private Bitmap gameOver;
@@ -78,9 +80,11 @@ public class GameView extends SurfaceView implements Runnable {
         highScore[2] = sharedPreferences.getInt("hiscore3",0);
         highScore[3] = sharedPreferences.getInt("hiscore4",0);
 
-        explosion=MediaPlayer.create(context,R.raw.explosion);
-        if(sharedPreferences.getBoolean("musicEnable",true))
-            BackgroundMusic.musicPlaying(context);
+        soundPool=new SoundPool(5,AudioManager.STREAM_MUSIC,0);
+        explosion=soundPool.load(context,R.raw.explosion,1);
+//        explosion=MediaPlayer.create(context,R.raw.explosion);
+//        if(sharedPreferences.getBoolean("musicEnable",true))
+//            BackgroundMusic.musicPlaying(context);
         gameOver=BitmapFactory.decodeResource(context.getResources(),R.drawable.gameover);
         health1=BitmapFactory.decodeResource(context.getResources(),R.drawable.health1);
         health2=BitmapFactory.decodeResource(context.getResources(),R.drawable.health2);
@@ -113,7 +117,7 @@ public class GameView extends SurfaceView implements Runnable {
                 lives--;
                 if(!isGameOver) {
                     if (sharedPreferences.getBoolean("soundEnable", true))
-                        explosion.start();
+                        soundPool.play(explosion, 1, 1, 0, 0, 1);
                 }
                 invaders.setX(rng.nextInt(6)*100);
                 invaders.setY((rng.nextInt(2)+1)*-200);
@@ -126,7 +130,7 @@ public class GameView extends SurfaceView implements Runnable {
             for(Invaders invaders:invadersArrayList)
                 invaders.setSpeed(invaders.getSpeed()+1);
         }
-        if(score%40==0&&score>0){
+        if(score%50==0&&score>0){
             score++;
             invadersArrayList.add(invaders = new Invaders(context, 100*rng.nextInt(7)));
         }
@@ -169,9 +173,9 @@ public class GameView extends SurfaceView implements Runnable {
                               e.putInt("hiscore" + i, highScore[i - 1]);
                           }
                           e.apply();
+                          BackgroundMusic.muteMusic();
                           runOnce--;
                       }
-                BackgroundMusic.stopMusic();
                 canvas.drawBitmap(gameOver,canvas.getWidth()/2- gameOver.getWidth()/2,200,paint);
             }
             surfaceHolder.unlockCanvasAndPost(canvas);
@@ -185,10 +189,12 @@ public class GameView extends SurfaceView implements Runnable {
 
         switch(motionEvent.getAction()){
             case MotionEvent.ACTION_DOWN:
-                System.out.println("Hey touch works");
+//                System.out.println("Hey touch works");
                 for(Invaders invaders:invadersArrayList){
                     if(invaders.getHitBox().contains(touchX,touchY)){
-                        System.out.println("Yeah here it is");
+//                        System.out.println("Yeah here it is");
+                        if (sharedPreferences.getBoolean("soundEnable", true))
+                            soundPool.play(explosion, 1, 1, 0, 0, 1);
                         score++;
                         invaders.setX(rng.nextInt(7)*100);
                         invaders.setY((rng.nextInt(2)+1)*-200);
@@ -202,6 +208,8 @@ public class GameView extends SurfaceView implements Runnable {
         if(isGameOver){
             if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
                 context.startActivity(new Intent(context,MainActivity.class));
+                GameActivity activity =(GameActivity)this.context;
+                activity.finish();
             }
         }
         return true;
