@@ -203,6 +203,7 @@ public class GameView extends SurfaceView implements Runnable {
                       if(runOnce==1) {
                           for (int i = 0; i < 4; i++) {
                               if (score > highScore[i]) {
+                                  highScore[i+1] = highScore[i];
                                   highScore[i] = score;
                                   i = 4;
                               }
