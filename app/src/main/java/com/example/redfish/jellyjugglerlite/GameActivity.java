@@ -4,6 +4,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Display;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,7 +23,7 @@ public class GameActivity extends AppCompatActivity{
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-
+        Log.i("gameactivity","width"+size.x+"  "+size.y);
         gameView = new GameView(this, size.x, size.y);
         gameView.setZOrderOnTop(true);
         gameView.getHolder().setFormat(PixelFormat.TRANSPARENT);
@@ -30,6 +31,7 @@ public class GameActivity extends AppCompatActivity{
 
         ImageView bgImagePanel = new ImageView(this);
         bgImagePanel.setBackgroundResource(R.drawable.bg);
+
 
 
         RelativeLayout.LayoutParams fillParentLayout = new RelativeLayout.LayoutParams(

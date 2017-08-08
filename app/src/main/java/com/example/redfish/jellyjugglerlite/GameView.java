@@ -17,8 +17,10 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -43,7 +45,7 @@ public class GameView extends SurfaceView implements Runnable {
     private ArrayList<Invaders> invadersArrayList;
     private Random rng;
     int screenX;
-
+    int screenY;
     private SoundPool soundPool;
     private int explosion;
 
@@ -52,17 +54,20 @@ public class GameView extends SurfaceView implements Runnable {
     public int runOnce;
     boolean playing;
 
+    private HealthPack healthPack;
     private boolean isGameOver;
     int score;
     int lives;
     int highScore[] = new int[4];
 
+    private Bitmap poof0,poof1,poof2,poof3,poof4,poof5;
     //TODO List
     public GameView(Context context, int screenX, int screenY){
         super(context);
         surfaceHolder = getHolder();
         paint = new Paint();
         this.screenX = screenX;
+        this.screenY=screenY;
         this.context=context;
         isGameOver = false;
         rng=new Random();
@@ -77,16 +82,25 @@ public class GameView extends SurfaceView implements Runnable {
 
         soundPool=new SoundPool(5,AudioManager.STREAM_MUSIC,0);
         explosion=soundPool.load(context,R.raw.explosion,1);
+        healthPack=new HealthPack(context,rng.nextInt(screenX-100),0);
 
+
+        //WIP Explosion TODO
         gameOver=BitmapFactory.decodeResource(context.getResources(),R.drawable.gameover);
         health1=BitmapFactory.decodeResource(context.getResources(),R.drawable.health1);
         health2=BitmapFactory.decodeResource(context.getResources(),R.drawable.health2);
         health3=BitmapFactory.decodeResource(context.getResources(),R.drawable.health3);
         invadersArrayList=new ArrayList<Invaders>();
 
+        poof0 = BitmapFactory.decodeResource(context.getResources(), R.drawable.poof0);
+        poof1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.poof1);
+        poof2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.poof2);
+        poof3 = BitmapFactory.decodeResource(context.getResources(), R.drawable.poof3);
+        poof4 = BitmapFactory.decodeResource(context.getResources(), R.drawable.poof4);
+        poof5 = BitmapFactory.decodeResource(context.getResources(), R.drawable.poof5);
         //TODO Enemies
         for(int i=0;i<3;i++) {
-            invadersArrayList.add(new Invaders(context, 100*rng.nextInt(6)));
+            invadersArrayList.add(new Invaders(context, rng.nextInt(screenX-100)));
         }
 
     }
@@ -98,26 +112,17 @@ public class GameView extends SurfaceView implements Runnable {
             update();
             draw();
             control();
-
+            Log.i("time",""+SystemClock.currentThreadTimeMillis());
         }
 
     }
 
     private void update() {
+        healthPack.update();
+
         for(Invaders invaders:invadersArrayList) {
             invaders.move();
-            if(Math.round(invaders.getY())>650){
-                lives--;
-                if(!isGameOver) {
-                    if (sharedPreferences.getBoolean("soundEnable", true))
-                        soundPool.play(explosion, 1, 1, 0, 0, 1);
-                }
-                invaders.setX(rng.nextInt(6)*100);
-                invaders.setY((rng.nextInt(2)+1)*-200);
-                invaders.getHitBox().set(invaders.getX(),invaders.getY(),invaders.getX()+invaders.getBitmap().getWidth(),invaders.getY()+invaders.getBitmap().getHeight());
-            }
         }
-
         if(score%10==0&&score>0){
             score++;
             for(Invaders invaders:invadersArrayList)
@@ -125,7 +130,7 @@ public class GameView extends SurfaceView implements Runnable {
         }
         if(score%50==0&&score>0){
             score++;
-            invadersArrayList.add(new Invaders(context, 100*rng.nextInt(7)));
+            invadersArrayList.add(new Invaders(context, rng.nextInt(screenX-100)));
         }
 
     }
@@ -138,21 +143,62 @@ public class GameView extends SurfaceView implements Runnable {
 
             paint.setColor(Color.WHITE);
             paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTextSize(100);
+            paint.setTextSize(screenX*screenY/10000);
             canvas.drawText(""+score,canvas.getWidth()/2,140,paint);
             //TODO Draw Lives Done
             if(lives==3)
-                canvas.drawBitmap(health3,canvas.getWidth()-health3.getWidth(),920,paint);
+                canvas.drawBitmap(health3,canvas.getWidth()-health3.getWidth(),Math.round(0.72*screenY),paint);
             else if(lives==2)
-                canvas.drawBitmap(health2,canvas.getWidth()-health2.getWidth(),920,paint);
+                canvas.drawBitmap(health2,canvas.getWidth()-health2.getWidth(),Math.round(0.72*screenY),paint);
             else if(lives==1)
-                canvas.drawBitmap(health2,canvas.getWidth()-health1.getWidth(),920,paint);
+                canvas.drawBitmap(health2,canvas.getWidth()-health1.getWidth(),Math.round(0.72*screenY),paint);
             else if(lives<1) {
                 isGameOver = true;
             }
-            for(Invaders invaders:invadersArrayList)
-              canvas.drawBitmap(invaders.getBitmap(),invaders.getX(),invaders.getY(),paint);
+            if (Math.round(healthPack.getY()) > Math.round(screenY/2)){
+                healthPack.setX(rng.nextInt(screenX-100));
+                healthPack.setY((rng.nextInt(2)+1)*-200);
+                healthPack.getHitbox().set(healthPack.getX(),healthPack.getY(),healthPack.getX()+healthPack.getBitmap().getWidth(),healthPack.getY()+healthPack.getBitmap().getHeight());
+            }
+            for(Invaders invaders:invadersArrayList) {
+                canvas.drawBitmap(invaders.getBitmap(), invaders.getX(), invaders.getY(), paint);
+                if (Math.round(invaders.getY()) > Math.round(screenY/2)) {
+                    lives--;
 
+                    if (!isGameOver) {
+                        if (sharedPreferences.getBoolean("soundEnable", true))
+                            soundPool.play(explosion, 1, 1, 0, 0, 1);
+                    }
+                    invaders.setX(rng.nextInt(screenX-100));
+                    invaders.setY((rng.nextInt(2) + 1) * -200);
+                    invaders.getHitBox().set(invaders.getX(), invaders.getY(), invaders.getX() + invaders.getBitmap().getWidth(), invaders.getY() + invaders.getBitmap().getHeight());
+                }
+            }
+
+            canvas.drawBitmap(healthPack.getBitmap(),healthPack.getX(),healthPack.getY(),paint);
+
+//            int i=0;
+//            for(i=0;i<6;i++)
+            switch(Math.round(SystemClock.currentThreadTimeMillis()/200)) {
+                case 1:
+                    canvas.drawBitmap(poof0, 0, 0, paint) ;
+                    break;
+                case 2:
+                    canvas.drawBitmap(poof1, 0, 0, paint) ;
+                    break;
+                case 3:
+                    canvas.drawBitmap(poof2, 0, 0, paint) ;
+                    break;
+                case 4:
+                    canvas.drawBitmap(poof3, 0, 0, paint) ;
+                    break;
+                case 5:
+                    canvas.drawBitmap(poof4, 0, 0, paint) ;
+                    break;
+                case 6:
+                    canvas.drawBitmap(poof5, 0, 0, paint) ;
+                    break;
+            }
             if(isGameOver){
                       if(runOnce==1) {
                           for (int i = 0; i < 4; i++) {
@@ -169,7 +215,7 @@ public class GameView extends SurfaceView implements Runnable {
                           BackgroundMusic.muteMusic();
                           runOnce--;
                       }
-                canvas.drawBitmap(gameOver,canvas.getWidth()/2- gameOver.getWidth()/2,200,paint);
+                canvas.drawBitmap(gameOver,canvas.getWidth()/2- gameOver.getWidth()/2,Math.round(0.16*screenY),paint);
             }
             surfaceHolder.unlockCanvasAndPost(canvas);
 
@@ -187,13 +233,23 @@ public class GameView extends SurfaceView implements Runnable {
 //                        System.out.println("Yeah here it is");
                         if (sharedPreferences.getBoolean("soundEnable", true))
                             soundPool.play(explosion, 1, 1, 0, 0, 1);
+
                         score++;
 
-                        invaders.setX(rng.nextInt(7)*100);
+                        invaders.setX(rng.nextInt(screenX-100));
                         invaders.setY((rng.nextInt(2)+1)*-200);
                         invaders.getHitBox().set(invaders.getX(),invaders.getY(),invaders.getX()+invaders.getBitmap().getWidth(),invaders.getY()+invaders.getBitmap().getHeight());
                     }
                 }
+                if(healthPack.getHitbox().contains(touchX,touchY)){
+                    if(lives<3&&lives>0){
+                        lives++;
+                    }
+                    healthPack.setX(rng.nextInt(screenX-100));
+                    healthPack.setY((rng.nextInt(2)+1)*-200);
+                    healthPack.getHitbox().set(healthPack.getX(),healthPack.getY(),healthPack.getX()+healthPack.getBitmap().getWidth(),healthPack.getY()+healthPack.getBitmap().getHeight());
+                }
+
                 break;
 
         }
@@ -228,7 +284,6 @@ public class GameView extends SurfaceView implements Runnable {
         gameThread = new Thread(this);
         gameThread.start();
     }
-
 
 }
 

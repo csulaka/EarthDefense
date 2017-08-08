@@ -37,10 +37,10 @@ public class HighScoreFragment extends DialogFragment {
         sharedPreferences  = this.getActivity().getSharedPreferences("JellyJuggler", Context.MODE_PRIVATE);
 
 
-        hiScore1.setText(" 1.\t\t\t"+sharedPreferences.getInt("hiscore1",0));
-        hiScore2.setText(" 2.\t\t\t"+sharedPreferences.getInt("hiscore2",0));
-        hiScore3.setText(" 3.\t\t\t"+sharedPreferences.getInt("hiscore3",0));
-        hiScore4.setText(" 4.\t\t\t"+sharedPreferences.getInt("hiscore4",0));
+        hiScore1.setText(" 1.\t\t\t\t\t\t\t\t\t\t"+sharedPreferences.getInt("hiscore1",0));
+        hiScore2.setText(" 2.\t\t\t\t\t\t\t\t\t\t"+sharedPreferences.getInt("hiscore2",0));
+        hiScore3.setText(" 3.\t\t\t\t\t\t\t\t\t\t"+sharedPreferences.getInt("hiscore3",0));
+        hiScore4.setText(" 4.\t\t\t\t\t\t\t\t\t\t"+sharedPreferences.getInt("hiscore4",0));
 
        backButton.setOnClickListener(new View.OnClickListener() {
 

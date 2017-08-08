@@ -18,14 +18,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.174" />
+        app:layout_constraintVertical_bias="0.123" />
 
     <ImageButton
         android:id="@+id/scoreButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/score"
-        android:background="@android:color/transparent"
+        android:background="?android:attr/selectableItemBackground"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/exit"
-        android:background="@android:color/transparent"
+        android:background="?android:attr/selectableItemBackground"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/playnows"
-        android:background="@android:color/transparent"
+        android:background="?android:attr/selectableItemBackground"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/options"
-        android:background="@android:color/transparent"
+        android:background="?android:attr/selectableItemBackground"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -75,7 +75,7 @@
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"

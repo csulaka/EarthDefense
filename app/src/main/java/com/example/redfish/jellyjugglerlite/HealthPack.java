@@ -1,6 +1,8 @@
 package com.example.redfish.jellyjugglerlite;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
 import java.util.Random;
@@ -17,8 +19,18 @@ public class HealthPack {
     private int speed;
     private Random rng;
 
-    public HealthPack(){
+    public HealthPack(Context context, int x, int y){
+        bitmap= BitmapFactory.decodeResource(context.getResources(),R.drawable.healthpack);
+        this.x=x;
+        this.y=y;
+        speed=1;
+        hitbox=new Rect(x,y,x+bitmap.getWidth(),y+bitmap.getHeight());
+    }
 
+    public void update(){
+        y+=speed;
+
+        hitbox.set(x,y,x+bitmap.getWidth(),y+bitmap.getHeight());
     }
     public Bitmap getBitmap() {
         return bitmap;
